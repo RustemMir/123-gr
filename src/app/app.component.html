@@ -1,0 +1,19 @@
+<h1>Oliver Sacks Books Collection</h1>
+<app-example-page></app-example-page>
+<h2>Books</h2>
+<h3>{{page}} : </h3>
+<app-book-list class="book-list" [books]="(books$ | async)!"
+               (add)="onAdd($event)"
+               [po]="(po$ | async)!"
+                [page] = "page$"
+></app-book-list>
+
+<h2>My Collection</h2>
+<app-book-collection class="book-collection" [books]="(bookCollection$ | async)!" (remove)="onRemove($event)">
+</app-book-collection>
+
+
+<!--
+Use of this source code is governed by an MIT-style license that
+can be found in the LICENSE file at https://github.com/ngrx/platform
+-->
