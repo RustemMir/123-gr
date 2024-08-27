@@ -4,8 +4,8 @@ import {GrpcEvent, GrpcStatusEvent} from "@ngx-grpc/common";
 import {EchoServiceClient} from "../proto/echo.pbsc";
 import {EchoRequest, EchoResponse} from "../proto/echo.pb";
 import {Timestamp} from "@ngx-grpc/well-known-types";
-import {GreeterClient} from "../proto/helloworld.pbsc";
-import {HelloRequest} from "../proto/helloworld.pb";
+import {GreeterClient, GreeterMyClient} from "../proto/helloworld.pbsc";
+import {HelloRequest, HelloRequestMy} from "../proto/helloworld.pb";
 
 enum ExampleEventType {
   request,
@@ -38,6 +38,9 @@ export class GrpcComponent {
   shouldThrow = false;
 
   response: string = "";
+  message1: string = "";
+  message2: string = "";
+  count: number = 10;
 
   @ViewChild('content') private contentRef: ElementRef<HTMLDivElement>;
 
@@ -46,7 +49,8 @@ export class GrpcComponent {
 
   constructor(
       private echoClient: EchoServiceClient,
-      private greeterClient: GreeterClient
+      private greeterClient: GreeterClient,
+  private greeterClientMy: GreeterMyClient
   ) { }
 
 
@@ -59,9 +63,23 @@ export class GrpcComponent {
           this.response = resprnse.message;
         }
     );
-
   }
 
+  helloMy() {
+    const helloRequestMy = new HelloRequestMy();
+    helloRequestMy.name = "привет Рустем";
+    helloRequestMy.count = 0;
+    this.greeterClientMy.sayHelloMy(helloRequestMy).subscribe(
+        response => {
+          console.log(response.message1);
+          console.log(response.message2);
+          console.log(response.count);
+          this.message1 = response.message1;
+          this.message2 = response.message2;
+          this.count = response.count;
+        }
+    )
+  }
 
   echo() {
     this.reset();

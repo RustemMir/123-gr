@@ -6,10 +6,25 @@ service Greeter {
   rpc SayHello (HelloRequest) returns (HelloReply);
 }
 
+service GreeterMy {
+  rpc SayHelloMy (HelloRequestMy) returns (HelloReplyMy);
+}
+
 message HelloRequest {
   string name = 1;
 }
 
 message HelloReply {
   string message = 1;
+}
+
+message HelloRequestMy {
+  string name = 1;
+  int32 count = 2;
+}
+
+message HelloReplyMy {
+  string message1 = 1;
+  string message2 = 2;
+  int32 count = 3;
 }
