@@ -10,6 +10,14 @@ service GreeterMy {
   rpc SayHelloMy (HelloRequestMy) returns (HelloReplyMy);
 }
 
+service Users {
+  rpc GetUsers (HelloRequestMy) returns (UserList);
+}
+
+service UsersStream {
+  rpc GetUsers (HelloRequestMy) returns (stream UserList);
+}
+
 message HelloRequest {
   string name = 1;
 }
@@ -27,4 +35,15 @@ message HelloReplyMy {
   string message1 = 1;
   string message2 = 2;
   int32 count = 3;
+}
+
+message User {
+  int32 id = 1;
+  string name = 2;
+  string email = 3;
+  string gender = 4;
+  string status = 5;
+}
+message UserList {
+  repeated User users = 1;
 }

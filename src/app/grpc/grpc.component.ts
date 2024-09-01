@@ -4,8 +4,13 @@ import {GrpcEvent, GrpcStatusEvent} from "@ngx-grpc/common";
 import {EchoServiceClient} from "../proto/echo.pbsc";
 import {EchoRequest, EchoResponse} from "../proto/echo.pb";
 import {Timestamp} from "@ngx-grpc/well-known-types";
-import {GreeterClient, GreeterMyClient} from "../proto/helloworld.pbsc";
-import {HelloRequest, HelloRequestMy} from "../proto/helloworld.pb";
+import {
+  GreeterClient,
+  GreeterMyClient,
+  UsersClient,
+  UsersStreamClient
+} from "../proto/helloworld.pbsc";
+import {HelloRequest, HelloRequestMy, UserList} from "../proto/helloworld.pb";
 
 enum ExampleEventType {
   request,
@@ -50,7 +55,9 @@ export class GrpcComponent {
   constructor(
       private echoClient: EchoServiceClient,
       private greeterClient: GreeterClient,
-  private greeterClientMy: GreeterMyClient
+      private greeterClientMy: GreeterMyClient,
+      private userList: UsersClient,
+      private userListStream: UsersStreamClient
   ) { }
 
 
@@ -77,6 +84,28 @@ export class GrpcComponent {
           this.message1 = response.message1;
           this.message2 = response.message2;
           this.count = response.count;
+        }
+    )
+  }
+
+  onUsers() {
+    const users = new HelloRequestMy();
+    users.name = "привет Рустем";
+    users.count = 0;
+    this.userList.getUsers(users).subscribe(
+        response => {
+          console.log(response.users);
+        }
+    )
+  }
+
+  onUsersStream() {
+    const users = new HelloRequestMy();
+    users.name = "привет Рустем";
+    users.count = 0;
+    this.userListStream.getUsers(users).subscribe(
+        response => {
+          console.log(response.users);
         }
     )
   }
