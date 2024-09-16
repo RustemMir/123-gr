@@ -10,7 +10,10 @@ import {
   UsersClient,
   UsersStreamClient
 } from "../proto/helloworld.pbsc";
-import {HelloRequest, HelloRequestMy, UserList} from "../proto/helloworld.pb";
+import {HelloRequest, HelloRequestMy, User, UserList} from "../proto/helloworld.pb";
+import {Archive} from "../state/grpc/grpc.model";
+import {GrpcActions} from "../state/grpc/grpc.action";
+import {Store} from "@ngrx/store";
 
 enum ExampleEventType {
   request,
@@ -57,7 +60,8 @@ export class GrpcComponent {
       private greeterClient: GreeterClient,
       private greeterClientMy: GreeterMyClient,
       private userList: UsersClient,
-      private userListStream: UsersStreamClient
+      private userListStream: UsersStreamClient,
+      private store: Store
   ) { }
 
 
@@ -99,15 +103,50 @@ export class GrpcComponent {
     )
   }
 
+  // потоковая передача данных
   onUsersStream() {
     const users = new HelloRequestMy();
     users.name = "привет Рустем";
     users.count = 0;
+    let row1: Archive = {
+      internalId: "internalId",
+      date: "date",
+      id: 0,
+      name: "name",
+      email: "email",
+      gender: "gender",
+      status: "status",
+    };
     this.userListStream.getUsers(users).subscribe(
         response => {
-          console.log(response.users);
+          let row = {...row1}
+          console.log("response.users:");
+         // this.store.dispatch(GrpcActions.addRow({row}));
+          row.internalId = crypto.randomUUID().toString();
+          row.date = Date.now().toString();
+          row.id = response.users[0].id
+          row.name = response.users[0].name;
+          row.email = response.users[0].email;
+          row.gender = response.users[0].gender;
+          row.status = response.users[0].status;
+          console.log(row)
+
+          this.store.dispatch(GrpcActions.addRow({row}));
         }
     )
+  }
+
+  private  setData(value: User[]): Archive | undefined{
+    const archive: Archive = {
+      internalId: crypto.randomUUID(),
+      date: Date.now().toString(),
+      id: value[0].id,
+      name: value[0].name,
+      email: value[0].email,
+      gender: value[0].gender,
+      status: value[0].status
+    }
+    return archive;
   }
 
   echo() {

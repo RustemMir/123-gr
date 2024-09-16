@@ -15,6 +15,11 @@ import {pageReducer} from "./state/page.ruducer";
 import {GrpcCoreModule} from "@ngx-grpc/core";
 import {GrpcWebClientModule} from "@ngx-grpc/grpc-web-client";
 import {GrpcComponent} from "./grpc/grpc.component";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TableComponent } from './components/table/table.component';
+import {MatTableModule} from "@angular/material/table";
+import {MatButtonModule} from "@angular/material/button";
+import {grpcReducer} from "./state/grpc/grpc.reducer";
 
 @NgModule({
   imports: [
@@ -24,6 +29,7 @@ import {GrpcComponent} from "./grpc/grpc.component";
       collection: collectionReducer,
       loginReducer: loginReducer,
       page: pageReducer,
+      grpcAddRow: grpcReducer,
     }),
     HttpClientModule,
     CommonModule,
@@ -31,8 +37,10 @@ import {GrpcComponent} from "./grpc/grpc.component";
     GrpcWebClientModule.forRoot({
       settings: { host: 'http://localhost:8080' },
     }),
+    BrowserAnimationsModule,
+    MatButtonModule, MatTableModule
   ],
-  declarations: [AppComponent, BookListComponent, BookCollectionComponent, GrpcComponent],
+  declarations: [AppComponent, BookListComponent, BookCollectionComponent, GrpcComponent, TableComponent],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

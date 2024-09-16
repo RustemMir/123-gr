@@ -26,7 +26,6 @@ export class BookListComponent {
     console.log("onNext - :" + pageOffset1);
     console.log(pageOffset1);
     this.store.dispatch(BooksActions.paginationChanged(pageOffset1));
-  //  this.store.dispatch(BooksActions.pageChang(page));
 
     this.store.dispatch(BooksActions.getPage({pageId}));
 
