@@ -1,0 +1,24 @@
+protoc -I=. helloworld.proto
+--js_out=import_style=commonjs:.
+--grpc-web_out=import_style=commonjs,mode=grpcwebtext:.
+
+protoc --plugin=protoc-gen-ng=$(which protoc-gen-ng)
+--ng_out=<OUTPUT_PATH>
+-I <PROTO_DIR_PATH> <PROTO_FILES>
+
+protoc -I ./ $(find ./ -name *.proto) --ng_out=./src/proto --plugin=protoc-gen-ng=$(which protoc-gen-ng)
+
+
+protoc -I ./ $(find ./ -name *.proto) --ng_out=./src/proto --plugin=protoc-gen-ng=./node_modules/.bin/protoc-gen-ng
+
+------------------------ protobuf -----------
+
+MacBook-Air-Mirsaev:proto mirsaev$ protoc --plugin=protoc-gen-ng=../../../node_modules/.bin/protoc-gen-ng --ng_out=./ -I ./ $(find ./ -iname "*.proto")
+
+---------------------------------------------
+
+
+Запускаем grpc>node server.js
+
+docker run -d -v "$(pwd)"/envoy.yaml:/etc/envoy/envoy.yaml:ro -p 8080:8080 -p 9901:9901 envoyproxy/envoy:v1.22.0
+https://github.com/grpc/grpc-web/tree/master/net/grpc/gateway/examples/helloworld

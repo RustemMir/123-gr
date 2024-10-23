@@ -7,25 +7,19 @@ import {GrpcActions} from "../../state/grpc/grpc.action";
 import {Archive} from "../../state/grpc/grpc.model";
 import {selectorGetPage} from "../../state/books.selectors";
 import {selectorRowGrpc} from "../../state/grpc/grpc.selector";
+import { DatePipe } from '@angular/common';
 
 export interface PeriodicElement {
   name: string;
   position: number;
   weight: number;
   symbol: string;
+  date: string;
 }
 
 const ELEMENT_DATA: PeriodicElement[] = [
-  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
-  {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
-  {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
-  {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
-  {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
-  {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
-  {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
-  {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
-  {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
+  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H', date: Date.now().toString()},
+  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He', date: Date.now().toString()},
 ];
 
 const row: Archive = {
@@ -41,10 +35,11 @@ const row: Archive = {
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
-  styleUrls: ['./table.component.css']
+  styleUrls: ['./table.component.css'],
+  providers: [DatePipe]
 })
 export class TableComponent {
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
+  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol', 'date'];
   dataSource = [...ELEMENT_DATA];
   rowGrpc$ = this.store.select(selectorRowGrpc);
   rowGrpc: Archive;
@@ -69,7 +64,8 @@ export class TableComponent {
     this.store.dispatch(GrpcActions.addRow({row}));
   }
 
-  constructor(private grpcService: GoogleBooksService, private store: Store){
+
+  constructor(private grpcService: GoogleBooksService, private store: Store, public datepipe: DatePipe){
 
   }
 
@@ -81,10 +77,12 @@ export class TableComponent {
         position: archive.id,
         name: archive.gender,
         weight: archive.id,
-        symbol: archive.internalId
+        symbol: archive.internalId,
+        date: this.datepipe.transform(Date.now(), 'yyyy.mm.dd hh:mm:ss'),
       }
-      this.dataSource.push(val);
+      this.dataSource.unshift(val);
       this.table.renderRows();
+
 
       //return this.rowGrpc;
     })
